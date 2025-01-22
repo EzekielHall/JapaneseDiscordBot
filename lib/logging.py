@@ -4,7 +4,7 @@ def log(text: str, console: bool = True) -> None:
     """
     param text: Takes in a string to log to a file and console
     """
-    logMsg = str(datetime.now().replace(microsecond=0)) + "  ::  " + text + "\n"
+    logMsg = str(datetime.now().replace(microsecond=0)) + " :: " + text + "\n"
     try:
         with open("log.txt", "a", encoding="utf-8") as logFile:
             logFile.write(logMsg)

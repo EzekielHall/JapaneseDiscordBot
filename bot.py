@@ -3,13 +3,16 @@ from discord import app_commands
 from discord.ext import commands
 from time import time
 from datetime import timedelta
+from os import path
 
 from lib.logging import log
 from lib.initConfig import importConfig
 from lib.translation import CustomTranslator
+from lib.userdata import UserDataHandler
 
 BOOT_TIME = time()
 translator = CustomTranslator()
+userdataHandler = UserDataHandler()
 
 # Config reading
 CONFIG = importConfig()
@@ -61,6 +64,8 @@ async def botTranslateToEnglish(interaction: discord.Interaction, passage: str):
         text = (nickname if nickname else interaction.user.name) + "さんからの依頼"
     )
 
+    userdataHandler.incrementTranslationCount(interaction.user)
+
     log(
         (nickname if nickname else interaction.user.name) + " used /translate : " + passage + "  -->  " + result[0]
     )
@@ -69,19 +74,36 @@ async def botTranslateToEnglish(interaction: discord.Interaction, passage: str):
 
 @bot.tree.command(name="debug", description="Check the bot's stats/info.", guild=discord.Object(id=GUILD_ID))
 async def debug(interaction: discord.Interaction):
-    latency = round(bot.latency * 1000)
-    uptime = timedelta(time() - BOOT_TIME)
+    if userdataHandler.getUser(interaction.user)["admin"]:
+        latency = round(bot.latency * 1000)
+        uptime = timedelta(seconds=int(time() - BOOT_TIME))
 
-    debug_msg = (
-        f"Latency is {latency}ms\n" +
-        f"Uptime: {uptime}"
-    )
+        debug_msg = (
+            f"Latency is {latency}ms\n" +
+            f"Uptime: {uptime}"
+        )
 
-    debug_log_msg = (
-        f"Latency: {latency}; Uptime: {uptime}"
-    )
+        debug_log_msg = (
+            f"{interaction.user.name}; Latency: {latency}; Uptime: {uptime}"
+        )
 
-    log(debug_log_msg)
-    await interaction.response.send_message(debug_msg)
+        log(debug_log_msg)
+        await interaction.response.send_message(debug_msg)
+    else:
+        await interaction.response.send_message("You do not have permission to debug.")
+
+@bot.command(name = "getData")
+async def reload(ctx: commands.Context):
+    if userdataHandler.getUser(ctx.author)["admin"]:
+        if path.exists("./data/userdata.json"):
+            userdataFile = discord.File("./data/userdata.json", filename=f"{int(time())}.json")
+            await ctx.author.send(file = userdataFile)
+    else:
+        await ctx.send("You do not have permission to use this.", delete_after = 5)
+    await ctx.message.delete()
+
+@bot.tree.command(name="reload", description="Reloads various parts of the bot.", guild=discord.Object(id=GUILD_ID))
+async def reload(interaction: discord.Interaction):
+    await interaction.response.send_message("You do not have permission to debug.")
 
 bot.run(TOKEN)
