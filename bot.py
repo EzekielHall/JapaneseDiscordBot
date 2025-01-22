@@ -68,11 +68,20 @@ async def botTranslateToEnglish(interaction: discord.Interaction, passage: str):
     await interaction.channel.send(embed=languageEmbed)
 
 @bot.tree.command(name="debug", description="Check the bot's stats/info.", guild=discord.Object(id=GUILD_ID))
-async def ping(interaction: discord.Interaction):
+async def debug(interaction: discord.Interaction):
     latency = round(bot.latency * 1000)
-    await interaction.response.send_message(
-        f"Latency is {latency}ms\n",
-        f"Uptime: {timedelta(time() - BOOT_TIME)}"
+    uptime = timedelta(time() - BOOT_TIME)
+
+    debug_msg = (
+        f"Latency is {latency}ms\n" +
+        f"Uptime: {uptime}"
     )
+
+    debug_log_msg = (
+        f"Latency: {latency}; Uptime: {uptime}"
+    )
+
+    log(debug_log_msg)
+    await interaction.response.send_message(debug_msg)
 
 bot.run(TOKEN)
