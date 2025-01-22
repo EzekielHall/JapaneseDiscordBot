@@ -67,32 +67,6 @@ async def botTranslateToEnglish(interaction: discord.Interaction, passage: str):
 
     await interaction.channel.send(embed=languageEmbed)
 
-# NOTE: Depriciated until furthur notice
-# @bot.tree.command(name="translate-to-english", description="Replies with a translation to English.", guild=discord.Object(id=GUILD_ID))
-# async def botTranslateToEnglish(interaction: discord.Interaction, message: str):
-#     text = translateToEnglish(message)
-#     await interaction.channel.send(text)
-
-# @bot.tree.command(name="translate-to-japanese", description="Replies with a translation to Japanese.", guild=discord.Object(id=GUILD_ID))
-# async def botTranslateToJapanese(interaction: discord.Interaction, text_to_translate: str):
-#     text = translateToJapanese(text_to_translate)
-
-#     nickname = interaction.user.nick
-#     if nickname:
-#         desc_text = "Requested by: " + nickname + f" ({interaction.user.name})"
-#     else:
-#         desc_text = "Requested by: " + interaction.user.name
-
-#     embed = discord.Embed(
-#         title = "Translation to Japanese",
-#         description = desc_text,
-#         color = discord.Color.red()
-#     )
-#     embed.add_field(name="Original", value=text_to_translate, inline=False)
-#     embed.add_field(name="Translated", value=text, inline=False)
-
-#     await interaction.channel.send(embed=embed)
-
 @bot.tree.command(name="debug", description="Check the bot's stats/info.", guild=discord.Object(id=GUILD_ID))
 async def ping(interaction: discord.Interaction):
     latency = round(bot.latency * 1000)
