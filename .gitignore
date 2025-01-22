@@ -1,4 +1,5 @@
 .venv
+data/userdata.json
 lib/__pycache__
 activate.ps1
 config.ini
