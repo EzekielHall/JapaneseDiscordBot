@@ -7,6 +7,14 @@ from lib.logging import log
 class UserDataHandler:
     def __init__(self):
         self.filename = "./data/userdata.json" # ./data/ because the bot is ran from the root project dir
+        self.fields = {
+            "username": "", # Stores the user's name
+            "nickname": None, # Stores a nickname if the user has one
+            "translations": 0, # Stores amount of times they've translated
+            "words" : [], # Stores an array of all word indices the user knows
+            "admin": False # Stores if they have admin perms
+        }
+
         self.data = self._load_userdata()
     
     def _load_userdata(self):
