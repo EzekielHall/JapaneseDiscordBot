@@ -1,7 +1,8 @@
 .venv
-data/userdata.json
+data/*
 lib/__pycache__
 activate.ps1
 config.ini
 log.txt
 test.py
+scrapers/

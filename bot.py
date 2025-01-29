@@ -5,7 +5,7 @@ from time import time
 from datetime import timedelta
 from os import path
 
-from lib.logging import log
+from lib.myLogging import log
 from lib.initConfig import importConfig
 from lib.translation import CustomTranslator
 from lib.userdata import UserDataHandler
@@ -35,7 +35,7 @@ async def on_ready():
 
 @bot.tree.command(name="translate", description="Auto-detects and translates sentences.", guild=discord.Object(id=GUILD_ID))
 async def botTranslateToEnglish(interaction: discord.Interaction, passage: str):
-    await interaction.response.send_message("Processing your request...", ephemeral=True)
+    await interaction.response.send_message("Processing your request...", ephemeral=True, delete_after=5)
 
     result = translator.translate(passage)
     if result == None:
@@ -104,6 +104,10 @@ async def reload(ctx: commands.Context):
 
 @bot.tree.command(name="reload", description="Reloads various parts of the bot.", guild=discord.Object(id=GUILD_ID))
 async def reload(interaction: discord.Interaction):
-    await interaction.response.send_message("You do not have permission to debug.")
+    # TODO: Add stuff that should be reloaded here
+    if not userdataHandler.getUser(interaction.author)["admin"]:
+        await interaction.response.send_message("You do not have permission to debug.", delete_after=5)
+    else:
+        pass
 
 bot.run(TOKEN)

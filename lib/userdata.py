@@ -2,17 +2,16 @@
 import json
 import discord
 
-from lib.logging import log
+from lib.myLogging import log
 
 class UserDataHandler:
     def __init__(self):
         self.filename = "./data/userdata.json" # ./data/ because the bot is ran from the root project dir
         self.fields = {
-            "username": "", # Stores the user's name
-            "nickname": None, # Stores a nickname if the user has one
+            "username": "",    # Stores the user's name
+            "nickname": None,  # Stores a nickname if the user has one
             "translations": 0, # Stores amount of times they've translated
-            "words" : [], # Stores an array of all word indices the user knows
-            "admin": False # Stores if they have admin perms
+            "admin": False     # Stores if they have admin perms
         }
 
         self.data = self._load_userdata()
@@ -45,11 +44,7 @@ class UserDataHandler:
     
     def _ensure_user_exist(self, user: discord.User):
         if not str(user.id) in self.data:
-            self.data[str(user.id)] = {
-                "username": user.name,
-                "translations": 0,
-                "admin" : False,
-            }
+            self.data[str(user.id)] = self.fields
     
     def incrementTranslationCount(self, user: discord.User):
         self._ensure_user_exist(user)
