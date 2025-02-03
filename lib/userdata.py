@@ -1,6 +1,6 @@
-# TODO: Create something to store data for each user that uses the japanese bot
 import json
 import discord
+import os
 
 from lib.myLogging import log
 
@@ -14,24 +14,26 @@ class UserDataHandler:
             "admin": False     # Stores if they have admin perms
         }
 
-        self.data = self._load_userdata()
+        self.data = self.__load_userdata__()
     
-    def _load_userdata(self):
+    def __load_userdata__(self):
         try:
             with open(self.filename, "r", encoding="utf-8") as file:
                 _data = json.load(file)
                 log("Userdata successfully loaded.")
                 return _data
         except (FileNotFoundError, json.JSONDecodeError) as e:
-            if isinstance(e, FileExistsError):
-                open(self.filename, "a")
-                log("No data found. New data file created.")
+            if isinstance(e, FileNotFoundError):
+                os.makedirs(os.path.dirname(self.filename), exist_ok=True)
+                with open(self.filename, "w", encoding="utf-8") as file:
+                    json.dump({}, file)
+                log("No user data found. New data file created.")
                 return {}
             elif isinstance(e, json.JSONDecodeError):
-                log("Critical error reading data.")
+                log("Critical error reading user data.")
                 with open(self.filename, "r") as file:
                     _data = file.read()
-                    with open("./data/damagedData.json", "w") as backup:
+                    with open("./data/damagedData.json", "w", encoding="utf-8") as backup:
                         backup.write(_data)
                         backup.close()
                     file.close()
